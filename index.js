@@ -10,6 +10,7 @@ const passport = require("passport");
 require("./config/passport")(passport);
 const cors = require("cors");
 const path = require("path");
+const port = process.env.PORT || 8080;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -29,6 +30,6 @@ mongoose
     console.log(e);
   });
 
-app.listen(8080, () => {
+app.listen(port, () => {
   console.log("connect to back_end server");
 });
