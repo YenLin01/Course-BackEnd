@@ -26,7 +26,17 @@ const courseValidation = (data) => {
   });
   return schema.validate(data);
 };
+const noteValidation = (data) => {
+  const schema = Joi.object({
+    title: Joi.string().min(1).max(50).required(),
+    content: Joi.string().min(1).max(300).required(),
+    month: Joi.number().min(1).max(12).required(),
+    date: Joi.number().min(1).max(31).required(),
+  });
+  return schema.validate(data);
+};
 
 module.exports.registerValidation = registerValidation;
 module.exports.loginValidation = loginValidation;
 module.exports.courseValidation = courseValidation;
+module.exports.noteValidation = noteValidation;

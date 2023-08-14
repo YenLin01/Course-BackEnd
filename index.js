@@ -4,6 +4,7 @@ const app = express();
 const dotenv = require("dotenv");
 const authRoute = require("./routes").auth;
 const courseRoute = require("./routes").course;
+const noteRoute = require("./routes").userNote;
 dotenv.config();
 const jwt = require("jsonwebtoken");
 const passport = require("passport");
@@ -21,6 +22,11 @@ app.use(
   "/api/course",
   passport.authenticate("jwt", { session: false }),
   courseRoute
+);
+app.use(
+  "/api/note",
+  passport.authenticate("jwt", { session: false }),
+  noteRoute
 );
 
 mongoose
