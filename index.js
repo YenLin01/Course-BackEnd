@@ -29,6 +29,11 @@ app.use(
   noteRoute
 );
 
+app.get("/", (req, res) => {
+  window.alert("啟用成功");
+  res.redirect("https://courseweb-0w0l.onrender.com/");
+});
+
 mongoose
   .connect(process.env.MONGODB_CONNECTION)
   .then(console.log("connect to mernDB"))
