@@ -30,7 +30,6 @@ app.use(
 );
 
 app.get("/", (req, res) => {
-  window.alert("啟用成功");
   res.redirect("https://courseweb-0w0l.onrender.com/");
 });
 
