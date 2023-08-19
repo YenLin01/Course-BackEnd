@@ -21,7 +21,7 @@ const courseSchema = new mongoose.Schema({
     ref: "User",
   },
   students: {
-    type: [String],
+    type: [Object],
     default: [],
   },
 });

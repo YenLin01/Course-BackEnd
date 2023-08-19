@@ -25,7 +25,7 @@ const NoteSchema = new mongoose.Schema({
   },
   state: {
     type: String,
-    enum: ["notedone", ""],
+    enum: ["done", ""],
   },
 });
 

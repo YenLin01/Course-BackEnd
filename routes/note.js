@@ -41,7 +41,8 @@ router.get("/:_id", async (req, res) => {
 
 router.post("/delete", async (req, res) => {
   let { _id } = req.body;
-  await userNote.findOneAndDelete({ _id });
+  let result = await userNote.findOneAndDelete({ _id });
+  res.send(result);
 });
 
 router.post("/todoToday", async (req, res) => {
@@ -53,6 +54,7 @@ router.post("/todoToday", async (req, res) => {
     .find({
       "TodoDate.month": { $eq: month },
       "TodoDate.date": { $eq: day },
+      author: req.user._id,
     })
     .exec();
   return res.send(findNote);
@@ -60,15 +62,32 @@ router.post("/todoToday", async (req, res) => {
 
 router.post("/expired", async (req, res) => {
   let Today = new Date();
-  let month = Today.getMonth() + 1;
+  let month = (Today.getMonth() + 1) * 100;
   let day = Today.getDate();
-
+  let total = month + day;
+  console.log(total);
   let findNote = await userNote
-    .find({
-      "TodoDate.month": { $lt: month },
-      "TodoDate.date": { $lt: day },
-    })
+    .aggregate([
+      {
+        $project: {
+          title: 1,
+          state: 1,
+          author: 1,
+          total: {
+            $add: [{ $multiply: ["$TodoDate.month", 100] }, "$TodoDate.date"],
+          },
+        },
+      },
+      {
+        $match: {
+          total: { $lt: total },
+          state: { $ne: "done" },
+          author: { $eq: req.user._id },
+        },
+      },
+    ])
     .exec();
+
   return res.send(findNote);
 });
 
@@ -76,13 +95,12 @@ router.post("/state", async (req, res) => {
   let { data } = req.body;
 
   let result = userNote
-    .updateMany({ _id: { $in: data } }, { state: "notedone" })
-    .then((msg) => {
-      console.log(msg);
-    })
+    .updateMany({ _id: { $in: data } }, { state: "done" })
+    .then()
     .catch((e) => {
       console.log(e);
     });
+  res.send();
 });
 
 router.post("/cancelDone", async (req, res) => {
@@ -90,12 +108,11 @@ router.post("/cancelDone", async (req, res) => {
 
   let result = userNote
     .updateMany({ _id: { $in: data } }, { state: "" })
-    .then((msg) => {
-      console.log(msg);
-    })
+    .then()
     .catch((e) => {
       console.log(e);
     });
+  res.send();
 });
 
 module.exports = router;
